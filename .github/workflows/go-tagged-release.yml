@@ -1,13 +1,14 @@
-name: "pre-release"
+name: "tagged-release"
+
 on:
   push:
-    branches:
-      - "master"
+    tags:
+      - "v*"
 
 jobs:
-  pre-release:
-    name: "Pre Release"
-    runs-on: ubuntu-latest
+  tagged-release:
+    name: "Tagged Release"
+    runs-on: "ubuntu-latest"
 
     steps:
       - uses: actions/checkout@v2
@@ -16,7 +17,6 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: 1.15 
-
       - name: Get Dependencies
         run: go get ./...
 
@@ -49,13 +49,11 @@ jobs:
         uses: NSCoder/archive-action@v1.0.0
         with:
           args: tar -czvf release/gfile_Darwin_x86_64.tar.gz build/gfile-darwin-x86_64
-     
+
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
-          prerelease: true
-          title: "Development Build"
+          prerelease: false
           files: |
             LICENSE
             README.md
